@@ -37,12 +37,20 @@ class TradingCalculatorGUI:
 
         # دکمه محاسبه
         calculate_button = tk.Button(root, text="Calculate", command=self.calculate)
-        calculate_button.grid(row=6, column=0, columnspan=2)
+        calculate_button.grid(row=8, column=0, columnspan=2)
 
         # نمایش نتایج
         self.result_text = tk.StringVar()
         result_label = tk.Label(root, textvariable=self.result_text, justify="left")
         result_label.grid(row=7, column=0, columnspan=2)
+
+        # در کلاس TradingCalculatorGUI
+        tk.Label(root, text="Fee Percentage:").grid(row=6, column=0)
+        self.fee_percentage_entry = tk.Entry(root)
+        self.fee_percentage_entry.grid(row=6, column=1)
+
+        
+
 
     def calculate(self):
         try:
@@ -53,17 +61,18 @@ class TradingCalculatorGUI:
             acceptable_risk = float(self.acceptable_risk_entry.get())
 
             # ساختن TradeController برای انجام محاسبات
+            fee_percentage = float(self.fee_percentage_entry.get())
             controller = TradeController(
-                self.trade_type.get(), capital, leverage, entry_price, rr_ratio, acceptable_risk
+            self.trade_type.get(), capital, leverage, entry_price, rr_ratio, acceptable_risk, fee_percentage
             )
             result = controller.perform_calculation()
 
             # نمایش نتایج
-            self.result_text.set(f"Position Size: {result['position_size']:.2f}\n"
-                                 f"Stop Loss: {result['stop_loss']:.2f}\n"
-                                 f"Target Price: {result['target_price']:.2f}\n"
-                                 f"Potential Profit: {result['potential_profit']:.2f}\n"
-                                 f"Potential Loss: {result['potential_loss']:.2f}\n"
-                                 f"Risk/Reward Ratio (R/R): {result['rr_ratio']:.2f}")
+            self.result_text.set(f"Position Size: {result['position_size']:.5f}\n"
+                                 f"Stop Loss: {result['stop_loss']:.5f}\n"
+                                 f"Target Price: {result['target_price']:.5f}\n"
+                                 f"Potential Profit: {result['potential_profit']:.5f}\n"
+                                 f"Potential Loss: {result['potential_loss']:.5f}\n"
+                                 f"Risk/Reward Ratio (R/R): {result['rr_ratio']:.5f}")
         except ValueError:
             messagebox.showerror("Error", "Please enter all values correctly.")
